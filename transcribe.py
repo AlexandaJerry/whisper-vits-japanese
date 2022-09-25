@@ -227,7 +227,7 @@ def cli():
     from . import available_models
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("input_dir", type=str, default="./audio", help="directory to save the wavs")
+    parser.add_argument("--input_dir","-i", type=str, default="./audio", help="directory to save the wavs")
     parser.add_argument("--model", default="small", choices=available_models(), help="name of the Whisper model to use")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu", help="device to use for PyTorch inference")
     parser.add_argument("--output_dir", "-o", type=str, default="./srt_files", help="directory to save the outputs")
@@ -273,10 +273,10 @@ def cli():
     model = load_model(model_name, device=device)
 
     wav_path=[]
-    for derName, subfolders, filenames in os.walk("./audio"):
+    for derName, subfolders, filenames in os.walk(input_dir):
       for i in range(len(filenames)):
         if filenames[i].endswith('.wav'):
-          file_path = './audio/' + filenames[i].split('.')[0] + ".wav"
+          file_path = input_dir + "/" + filenames[i].split('.')[0] + ".wav"
           path=wav_path.append(file_path)    
 
     for audio_path in wav_path:
