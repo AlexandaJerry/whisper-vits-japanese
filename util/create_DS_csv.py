@@ -15,7 +15,6 @@ def create_DS_csv (path):
 
     for entry in glob(path +'*.wav'):
         filepath = os.path.abspath(entry) #主要需要文件名
-        #filepath = os.path.basename(entry)
         filesize = os.path.getsize(entry)
         with contextlib.closing(wave.open(entry, 'rb')) as f:
             frames = f.getnframes()

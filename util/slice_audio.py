@@ -8,6 +8,7 @@ def split_files(item, wav_item):
     df = pd.read_csv(item)
 
     def audio_split(df):
+        
         split = song[df['start_times']:df['end_times']]
         split.export('./sliced_audio/' + df['id'] + '.wav', format ='wav')
 
