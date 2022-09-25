@@ -1,7 +1,6 @@
 from pickle import FALSE, TRUE
 import string
 import pandas as pd
-from unidecode import unidecode
 
 def clean_unwanted_characters(final_csv_path):
 
@@ -16,39 +15,10 @@ def clean_unwanted_characters(final_csv_path):
 
 
     #Characters to be removed
-    punct = str(['.!"#$%&\'()*+,-/:;<–=>?@[\\]^_°`{}~ ̀ ̆ ̃ ́'])
-    transtab = str.maketrans(dict.fromkeys(punct, ' '))
+
     df_ds_final = df_ds_final.dropna()
-
-    df_ds_final['transcript'] = '£'.join(df_ds_final['transcript'].tolist()).translate(transtab).split('£')
-
-    df_ds_final['transcript'] = df_ds_final['transcript'].str.lower()
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('\s+', ' ', regex=True)
+    df_ds_final['transcript'] = df_ds_final['transcript'].replace('\s+', '、', regex=True)
     df_ds_final['transcript'] = df_ds_final['transcript'].str.strip()
-
-    #Further remove unwanted characters
-    remove_char = '鄚氏鐷顤鐰鄣酹輐霵鐼羦鄜酲酺酺礫飉舣δφℳˁｶᛠᛏˁːɣ\ʿʻʾŋ\ʹªьʺъˀˇʼʔˊˈ!"#$%&\()*+,-./:;<=>?@[]^_`{|}~'
-
-    table_2 = str.maketrans('','', remove_char)
-    df_ds_final['transcript'] = [w.translate(table_2) for w in df_ds_final['transcript']]
-
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ä','ae', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ö','oe', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ü','ue', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('α','alpha', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ə','e', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ё','e', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('γ','gamma', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('µ','mikro', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('π','pi', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('β','beta', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ζ','zeta', regex=True)
-    df_ds_final['transcript'] = df_ds_final['transcript'].replace('ß','ss', regex=True)
-
-    #to get rid of final unwanted characters transform characters to strictly unicode
-    def to_ASCII(text):
-        text = unidecode(text)
-        return text
 
     df_ds_final['transcript'] = df_ds_final['transcript']
 
