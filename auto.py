@@ -103,7 +103,7 @@ df_files = pd.read_csv(DS_csv)
 
 #by splitting the path at / and then choosing -1, the filename can be extracted
 def remove_path(path):
-    path = path.split('\\')[-1]
+    path = path.split('/')[-1]
     return path
 
 df_files['id'] = df_files['wav_filename'].apply(remove_path)
@@ -113,8 +113,6 @@ def convert(duration):
     time = float(duration)
     return time
 df_files['duration'] = df_files['duration'].apply(convert)
-df_files = df_files[df_files['duration']<12.00]
-df_files = df_files[df_files['duration']>2.00]
 
 #drop unnecessary columns
 df_transcripts.drop(['start_times','end_times'], axis=1, inplace=True)
@@ -138,8 +136,8 @@ print('---------------------------------------------------------------------')
 
 #write transcript to text-file for language model
 df_text = pd.read_csv('./merged_csv/DS_training_final_merged.csv')
-df_text[['wav_filename','transcript']].to_csv('./filelists/train_filelist.txt', header=None, index=None, mode='a', sep='|')
-df_text[['wav_filename','transcript']].to_csv('./filelists/val_filelist.txt', header=None, index=None, mode='a', sep='|')
+df_text[['wav_filename','transcript']].to_csv('./filelists/train_filelist.txt', header=None, index=None, mode='w', sep='|')
+df_text[['wav_filename','transcript']].to_csv('./filelists/val_filelist.txt', header=None, index=None, mode='w', sep='|')
 
 import shutil,os,re
 slice_path = './ready_for_slice'
