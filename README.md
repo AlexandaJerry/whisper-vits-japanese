@@ -1,58 +1,7 @@
-# VITS: Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech
+# Whisper-VITS-Japanese
 
-### Jaehyeon Kim, Jungil Kong, and Juhee Son
+这个项目将Google的Whisper项目作为VITS的数据处理器，通过修改Whisper项目的transcribe.py，生成音频对应的Srt文件(这里使用的是被删掉的PR，现在已经找不到那个PR，所以无法引用到原作者)，同时将Whisper只能读取少数音频文件的限制，放宽到可以遍历文件夹下的所有音频文件。Whisper可以输出Srt使得长音频的输入成为可能，用户不需要再把音频切割零碎，甚至不需要再转写长音频的文本。我们直接靠Whisper进行语音识别和数据准备，自动切片为短音频，自动生成抄本文件，然后送入VITS训练流程。考虑到长时间的音频干声更容易获取，VITS入门壁垒再次大大降低。
 
-In our recent [paper](https://arxiv.org/abs/2106.06103), we propose VITS: Conditional Variational Autoencoder with Adversarial Learning for End-to-End Text-to-Speech.
+处理流程大致如下：Whisper识别后的Srt文件会被auto.py处理，处理过程参考了[tobiasrordorf/SRT-to-CSV-and-audio-split: Split long audio files based on subtitle-info in SRT File (Transcript saved in CSV) (github.com)](https://github.com/tobiasrordorf/SRT-to-CSV-and-audio-split).  音频文件首先被转换为22050Hz和16bits，然后同名Srt文件的时间戳和语音识别的抄本被转换为csv文件，Csv文件中带有音频各段区间的起始时间、结束时间，以及对应的抄本和音频文件路径，然后采用AudioSegment这个包按照起始时间和结束时间切分长音频，按照切片顺序生成带有后缀的音频文件，例如A_0.wav和A_1.wav等等。所有被切片的音频都会被存入slice_audio文件夹，然后filelists文件夹下会生成VITS需要的带有“路径|转写”的txt文件，后续的数据流程就可以直接接上VITS部分。
 
-Several recent end-to-end text-to-speech (TTS) models enabling single-stage training and parallel sampling have been proposed, but their sample quality does not match that of two-stage TTS systems. In this work, we present a parallel end-to-end TTS method that generates more natural sounding audio than current two-stage models. Our method adopts variational inference augmented with normalizing flows and an adversarial training process, which improves the expressive power of generative modeling. We also propose a stochastic duration predictor to synthesize speech with diverse rhythms from input text. With the uncertainty modeling over latent variables and the stochastic duration predictor, our method expresses the natural one-to-many relationship in which a text input can be spoken in multiple ways with different pitches and rhythms. A subjective human evaluation (mean opinion score, or MOS) on the LJ Speech, a single speaker dataset, shows that our method outperforms the best publicly available TTS systems and achieves a MOS comparable to ground truth.
-
-Visit our [demo](https://jaywalnut310.github.io/vits-demo/index.html) for audio samples.
-
-We also provide the [pretrained models](https://drive.google.com/drive/folders/1ksarh-cJf3F5eKJjLVWY0X1j1qsQqiS2?usp=sharing).
-
-** Update note: Thanks to [Rishikesh (ऋषिकेश)](https://github.com/jaywalnut310/vits/issues/1), our interactive TTS demo is now available on [Colab Notebook](https://colab.research.google.com/drive/1CO61pZizDj7en71NQG_aqqKdGaA_SaBf?usp=sharing).
-
-<table style="width:100%">
-  <tr>
-    <th>VITS at training</th>
-    <th>VITS at inference</th>
-  </tr>
-  <tr>
-    <td><img src="resources/fig_1a.png" alt="VITS at training" height="400"></td>
-    <td><img src="resources/fig_1b.png" alt="VITS at inference" height="400"></td>
-  </tr>
-</table>
-
-
-## Pre-requisites
-0. Python >= 3.6
-0. Clone this repository
-0. Install python requirements. Please refer [requirements.txt](requirements.txt)
-    1. You may need to install espeak first: `apt-get install espeak`
-0. Download datasets
-    1. Download and extract the LJ Speech dataset, then rename or create a link to the dataset folder: `ln -s /path/to/LJSpeech-1.1/wavs DUMMY1`
-    1. For mult-speaker setting, download and extract the VCTK dataset, and downsample wav files to 22050 Hz. Then rename or create a link to the dataset folder: `ln -s /path/to/VCTK-Corpus/downsampled_wavs DUMMY2`
-0. Build Monotonic Alignment Search and run preprocessing if you use your own datasets.
-```sh
-# Cython-version Monotonoic Alignment Search
-cd monotonic_align
-python setup.py build_ext --inplace
-
-# Preprocessing (g2p) for your own datasets. Preprocessed phonemes for LJ Speech and VCTK have been already provided.
-# python preprocess.py --text_index 1 --filelists filelists/ljs_audio_text_train_filelist.txt filelists/ljs_audio_text_val_filelist.txt filelists/ljs_audio_text_test_filelist.txt 
-# python preprocess.py --text_index 2 --filelists filelists/vctk_audio_sid_text_train_filelist.txt filelists/vctk_audio_sid_text_val_filelist.txt filelists/vctk_audio_sid_text_test_filelist.txt
-```
-
-
-## Training Exmaple
-```sh
-# LJ Speech
-python train.py -c configs/ljs_base.json -m ljs_base
-
-# VCTK
-python train_ms.py -c configs/vctk_base.json -m vctk_base
-```
-
-
-## Inference Example
-See [inference.ipynb](inference.ipynb)
+我现在用的VITS的cleaner和symbol是[CjangCjengh/vits: VITS implementation of Japanese, Chinese, Korean and Sanskrit (github.com)](https://github.com/CjangCjengh/vits)作为创世神时期最初始的那版，现在他的仓库更新了更多的cleaner和symbol，不过我是很念旧的人，而且我很怀念刚开始大家来到VITS的时候，所以我还是用着最初的那版。VITS主要有两个预处理，一个是monotonic align，另一个是preprocess.py，然后就可以开始train.py。所有的流程我都放进了whisper-vits-japanese.ipynb，只需要逐行点击就能运行，唯一需要用户自己改动的地方就是把我的音频zip路径，换成你自己的音频zip，其余部分均不用修改。最后我还加上了把模型和处理好的文件存入网盘，以及下次训练时恢复从网盘恢复上次最新的checkpoint的指令。
