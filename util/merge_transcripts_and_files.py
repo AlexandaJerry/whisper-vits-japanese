@@ -14,12 +14,12 @@ def merge_transcripts_and_wav_files(transcript_path, DS_csv):
 
     df_files['id'] = df_files['wav_filename'].apply(remove_path)
 
-    #filter out duration of less than 10 seconds
+    #filter out duration of less than 15 seconds
     def convert(duration):
         time = float(duration)
         return time
     df_files['duration'] = df_files['duration'].apply(convert)
-    df_files = df_files[df_files['duration']<10.00]
+    df_files = df_files[df_files['duration']<15.00]
 
     #drop unnecessary columns
     df_transcripts.drop(['start_times','end_times'], axis=1, inplace=True)
