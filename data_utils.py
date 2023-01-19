@@ -74,7 +74,7 @@ class TextAudioLoader(torch.utils.data.Dataset):
             try:
                 spec = torch.load(spec_filename)
             except:
-                raise ValueError("{} could not be loaded".format(spec_filename))
+                print("{} could not be loaded".format(spec_filename))
         else:
             spec = spectrogram_torch(audio_norm, self.filter_length,
                 self.sampling_rate, self.hop_length, self.win_length,
