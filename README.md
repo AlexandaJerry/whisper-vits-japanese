@@ -9,6 +9,8 @@
 
 我现在用的VITS的cleaner和symbol是[CjangCjengh/vits: VITS implementation of Japanese, Chinese, Korean and Sanskrit (github.com)](https://github.com/CjangCjengh/vits)作为创世神时期最初始的那版，现在他的仓库更新了更多的cleaner和symbol，不过我是很念旧的人，而且我很怀念刚开始大家来到VITS的时候，所以我还是用着最初的那版。VITS主要有两个预处理，一个是monotonic align，另一个是preprocess.py，然后就可以开始train.py。所有的流程我都放进了whisper-vits-japanese.ipynb，只需要逐行点击就能运行，唯一需要用户自己改动的地方就是把我的音频zip路径，换成你自己的音频zip，其余部分均不用修改。最后我还加上了把模型和处理好的文件存入网盘，以及下次训练时恢复从网盘恢复上次最新的checkpoint的指令。
 
+### 下方部分由[Mr47121836](https://github.com/Mr47121836)完成，我们在此表示感谢
+
 ### 20230202添加了auto_ms.py,ms.json文件，进行多人训练就要运行auto_ms.py。
 
 #### 前期处理：
