@@ -9,35 +9,35 @@
 
 我现在用的VITS的cleaner和symbol是[CjangCjengh/vits: VITS implementation of Japanese, Chinese, Korean and Sanskrit (github.com)](https://github.com/CjangCjengh/vits)作为创世神时期最初始的那版，现在他的仓库更新了更多的cleaner和symbol，不过我是很念旧的人，而且我很怀念刚开始大家来到VITS的时候，所以我还是用着最初的那版。VITS主要有两个预处理，一个是monotonic align，另一个是preprocess.py，然后就可以开始train.py。所有的流程我都放进了whisper-vits-japanese.ipynb，只需要逐行点击就能运行，唯一需要用户自己改动的地方就是把我的音频zip路径，换成你自己的音频zip，其余部分均不用修改。最后我还加上了把模型和处理好的文件存入网盘，以及下次训练时恢复从网盘恢复上次最新的checkpoint的指令。
 
-20230202添加了auto_ms.py,ms.json文件，进行多人训练就要运行auto_ms.py。
+### 20230202添加了auto_ms.py,ms.json文件，进行多人训练就要运行auto_ms.py。
 
-前期处理：
+#### 前期处理：
 
 只需要上次特定名字的音频文件格式为 speakerId_XXXX.wav 上传到audio文件夹，之后按照一般步骤运行，到了音频处理就运行auto_ms.py文件，会自动生成txt文件，格式为Path|speakerId|text。
 
-训练：
+#### 训练：
 
 运行python train_ms.py -c configs/ms.json -m ms
 
-多人模型接口部分使用：
-
+#### 多人模型接口部分使用：
+```
 hps = utils.get_hparams_from_file("./configs/ms.json")
 
 net_g = SynthesizerTrn(
-    len(symbols),
-    hps.data.filter_length // 2 + 1,
-    hps.train.segment_size // hps.data.hop_length,
-    n_speakers=hps.data.n_speakers,
-    **hps.model).cuda()
-_ = net_g.eval()
+    len(symbols),  
+    hps.data.filter_length // 2 + 1,  
+    hps.train.segment_size // hps.data.hop_length,  
+    n_speakers=hps.data.n_speakers,  
+    **hps.model).cuda()  
+_ = net_g.eval()  
 
 _ = utils.load_checkpoint("/root/autodl-tmp/logs/ms/G_29000.pth", net_g, None)
 
-stn_tst = get_text("私は暁の星の優衣です", hps)
-with torch.no_grad():
-    x_tst = stn_tst.cuda().unsqueeze(0)
-    x_tst_lengths = torch.LongTensor([stn_tst.size(0)]).cuda()
-    sid = torch.LongTensor([11]).cuda() //11指speakerId为11，如果有12个n_speaker,编号就从0-11
-    audio = net_g.infer(x_tst, x_tst_lengths, sid=sid, noise_scale=.667, noise_scale_w=0.8, length_scale=1)[0][0,0].data.cpu().float().numpy()
-ipd.display(ipd.Audio(audio, rate=hps.data.sampling_rate, normalize=False))
-
+stn_tst = get_text("ごめんね優衣", hps)
+with torch.no_grad():  
+    x_tst = stn_tst.cuda().unsqueeze(0)  
+    x_tst_lengths = torch.LongTensor([stn_tst.size(0)]).cuda()  
+    sid = torch.LongTensor([11]).cuda() //11指speakerId为11，如果有12个n_speaker,编号就从0-11  
+    audio = net_g.infer(x_tst, x_tst_lengths, sid=sid, noise_scale=.667, noise_scale_w=0.8, length_scale=1)[0][0,0].data.cpu().float().numpy()  
+ipd.display(ipd.Audio(audio, rate=hps.data.sampling_rate, normalize=False))  
+```
