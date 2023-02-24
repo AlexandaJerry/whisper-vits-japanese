@@ -1,6 +1,10 @@
 # Whisper-VITS-Japanese
 
 ### 教程在这里：https://www.bilibili.com/video/BV19e4y167Dx/?spm_id_from=333.999.0.0 
+| Task                                     | Notebook                                                                                                                                                                                                            |
+|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|Whisper_Vits_Japanese(内置艾拉数据集) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/AlexandaJerry/whisper-vits-japanese/blob/main/Whisper_Vits_Japanese.ipynb) |
+
 ###  2023.01.31 更新了spec.pt损坏后自动生成新spec.pt以增强从网盘恢复训练的容错率
 
 这个项目将Google的Whisper项目作为VITS的数据处理器，通过修改Whisper项目的transcribe.py，生成音频对应的Srt文件(这里使用的是被删掉的PR，现在已经找不到那个PR，所以无法引用到原作者)，同时将Whisper只能读取少数音频文件的限制，放宽到可以遍历文件夹下的所有音频文件。Whisper可以输出Srt使得长音频的输入成为可能，用户不需要再把音频切割零碎，甚至不需要再转写长音频的文本。我们直接靠Whisper进行语音识别和数据准备，自动切片为短音频，自动生成抄本文件，然后送入VITS训练流程。考虑到长时间的音频干声更容易获取，VITS入门壁垒再次大大降低。
