@@ -15,11 +15,18 @@
 
 #### 前期处理：
 
-只需要上次特定名字的音频文件格式为 speakerId_XXXX.wav 上传到audio文件夹，之后按照一般步骤运行，到了音频处理就运行auto_ms.py文件，会自动生成txt文件，格式为Path|speakerId|text。
+只需要将音频文件格式命名为 speakerId_XXXX.wav 上传到audio文件夹，之后按照一般步骤运行，到了音频处理就运行auto_ms.py文件，会自动生成txt文件，格式为Path|speakerId|text。
+
+注意：若你使用了auto_ms.py来生成txt，必须在Alignment and Text Conversion这步修改为代码：(因为在多人训练时的text_index不是1而是2)
+'''
+!python preprocess.py --text_index 2 --text_cleaners japanese_cleaners --filelists /content/whisper-vits-japanese/filelists/train_filelist.txt /content/whisper-vits-japanese/filelists/val_filelist.txt
+'''
 
 #### 训练：
 
-运行python train_ms.py -c configs/ms.json -m ms
+'''
+python train_ms.py -c configs/ms.json -m ms
+'''
 
 #### 多人模型接口部分使用：
 ```
