@@ -15,9 +15,8 @@
 
 ---
 
-### 下方部分由[Mr47121836](https://github.com/Mr47121836)完成，我们在此表示感谢
+### 下方多人训练部分由[Mr47121836](https://github.com/Mr47121836)完成，我们表示感谢
 ### 此外特致谢[失迹](https://github.com/Mitr-yuzr)指出的Numpy版本和文本预处理问题
-
 ### 2023.02.02添加了auto_ms.py,ms.json文件，进行多人训练就要运行auto_ms.py
 
 #### 前期处理：
