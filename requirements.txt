@@ -6,3 +6,4 @@ phonemizer==2.2.1
 scipy==1.8.0
 Unidecode==1.3.6
 torch==1.12.1
+pyopenjtalk==0.1.3
