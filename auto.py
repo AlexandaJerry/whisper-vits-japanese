@@ -77,7 +77,7 @@ print('---------------------------------------------------------------------')
 #now slice audio according to start- and end-times in csv
 print('Slicing audio according to start- and end_times of transcript_csvs...')
 for item in glob('./ready_for_slice/*.csv'):
-    wav_item = item.replace('.csv','.wav')
+    wav_item = item.replace('.csv','')
     if os.path.exists(wav_item):
         split_files(item, wav_item)
     else:
@@ -117,7 +117,7 @@ df_files['duration'] = df_files['duration'].apply(convert)
 #drop unnecessary columns
 df_transcripts.drop(['start_times','end_times'], axis=1, inplace=True)
 
-df_files['id'] = df_files['id'].replace('.wav', '', regex=True)
+df_files['id'] = df_files['id'].replace('.wav$', '', regex=True)
 
 #merge on column id
 df_final = pd.merge(df_transcripts, df_files, on='id')
